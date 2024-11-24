@@ -140,7 +140,7 @@ function isPrime(n) {
  */
 function toNumber(value, def) {
   const num = Number(value);
-  return isNaN(num) ? def : num;
+  return Number.isNaN(num) ? def : num;
 }
 
 module.exports = {
