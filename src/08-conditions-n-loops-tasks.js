@@ -24,7 +24,7 @@ function getFactorial(n) {
  */
 function getSumBetweenNumbers(n1, n2) {
   let sum = 0;
-  for (let i = n1; i <= n2; i++) {
+  for (let i = n1; i <= n2; i += 1) {
     sum += i;
   }
   return sum;
@@ -42,10 +42,9 @@ function isTriangle(a, b, c) {
  */
 function doRectanglesOverlap(rect1, rect2) {
   return (
-    rect1.left < rect2.left + rect2.width &&
-    rect1.left + rect1.width > rect2.left &&
-    rect1.top < rect2.top + rect2.height &&
-    rect1.top + rect1.height > rect2.top
+    rect1.left < rect2.left + rect2.width && rect1.left + rect1.width > rect2.left
+    && rect1.top < rect2.top + rect2.height
+    && rect1.top + rect1.height > rect2.top
   );
 }
 
@@ -53,9 +52,7 @@ function doRectanglesOverlap(rect1, rect2) {
  * Returns true, if point lies inside the circle, otherwise false.
  */
 function isInsideCircle(circle, point) {
-  const distance = Math.sqrt(
-    (point.x - circle.center.x) ** 2 + (point.y - circle.center.y) ** 2
-  );
+  const distance = Math.sqrt((point.x - circle.center.x) ** 2 + (point.y - circle.center.y) ** 2);
   return distance < circle.radius;
 }
 
@@ -63,7 +60,7 @@ function isInsideCircle(circle, point) {
  * Returns the first non repeated char in the specified string otherwise returns null.
  */
 function findFirstSingleChar(str) {
-  for (let i = 0; i < str.length; i++) {
+  for (let i = 0; i < str.length; i += 1) {
     if (str.indexOf(str[i]) === str.lastIndexOf(str[i])) {
       return str[i];
     }
@@ -103,14 +100,13 @@ function isCreditCardNumber(ccn) {
   const digits = ccn.toString().split('').reverse().map(Number);
   return (
     digits.reduce((sum, digit, idx) => {
+      let modifiedDigit = digit;
       if (idx % 2 === 1) {
-        digit *= 2;
-        if (digit > 9) digit -= 9;
+        modifiedDigit *= 2;
+        if (modifiedDigit > 9) modifiedDigit -= 9;
       }
-      return sum + digit;
-    }, 0) %
-      10 ===
-    0
+      return sum + modifiedDigit;
+    }, 0) % 10 === 0
   );
 }
 
@@ -132,14 +128,18 @@ function isBracketsBalanced(str) {
     ']': '[',
     '>': '<',
   };
-  for (const char of str) {
+  let balanced = true; // Инициализируем переменную для отслеживания состояния баланса
+  str.split('').forEach((char) => {
     if ('({[<'.includes(char)) {
       stack.push(char);
     } else if (')}]>'.includes(char)) {
-      if (stack.pop() !== brackets[char]) return false;
+      if (stack.pop() !== brackets[char]) {
+        balanced = false; // Если скобка не совпала, изменяем состояние
+      }
     }
-  }
-  return stack.length === 0;
+  });
+  // Если стек пуст в конце и состояние balance не изменилось, значит всё правильно
+  return balanced && stack.length === 0;
 }
 
 /**
@@ -153,12 +153,12 @@ function toNaryString(num, n) {
  * Returns the common directory path for specified array of full filenames.
  */
 function getCommonDirectoryPath(pathes) {
-  const splitPathes = pathes.map(path => path.split('/'));
-  const minLength = Math.min(...splitPathes.map(p => p.length));
+  const splitPathes = pathes.map((path) => path.split('/'));
+  const minLength = Math.min(...splitPathes.map((p) => p.length));
   let commonPath = '';
-  for (let i = 0; i < minLength; i++) {
+  for (let i = 0; i < minLength; i += 1) {
     const segment = splitPathes[0][i];
-    if (splitPathes.every(path => path[i] === segment)) {
+    if (splitPathes.every((path) => path[i] === segment)) {
       commonPath += `${segment}/`;
     } else {
       break;
@@ -171,13 +171,13 @@ function getCommonDirectoryPath(pathes) {
  * Returns the product of two specified matrixes.
  */
 function getMatrixProduct(m1, m2) {
-  const rowsA = m1.length,
-    colsA = m1[0].length,
-    colsB = m2[0].length;
+  const rowsA = m1.length;
+  const colsA = m1[0].length;
+  const colsB = m2[0].length;
   const result = Array.from({ length: rowsA }, () => Array(colsB).fill(0));
-  for (let i = 0; i < rowsA; i++) {
-    for (let j = 0; j < colsB; j++) {
-      for (let k = 0; k < colsA; k++) {
+  for (let i = 0; i < rowsA; i += 1) {
+    for (let j = 0; j < colsB; j += 1) {
+      for (let k = 0; k < colsA; k += 1) {
         result[i][j] += m1[i][k] * m2[k][j];
       }
     }
@@ -199,11 +199,14 @@ function evaluateTicTacToePosition(position) {
     [position[0][0], position[1][1], position[2][2]],
     [position[0][2], position[1][1], position[2][0]],
   ];
-  for (const line of lines) {
-    if (line.every(cell => cell === 'X')) return 'X';
-    if (line.every(cell => cell === '0')) return '0';
-  }
-  return undefined;
+
+  let result;
+  lines.forEach((line) => {
+    if (line.every((cell) => cell === 'X')) result = 'X';
+    if (line.every((cell) => cell === '0')) result = '0';
+  });
+
+  return result;
 }
 
 module.exports = {
