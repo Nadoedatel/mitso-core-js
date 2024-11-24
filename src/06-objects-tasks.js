@@ -14,7 +14,7 @@
 function Rectangle(width, height) {
   this.width = width;
   this.height = height;
-  this.getArea = function () {
+  this.getArea = function getArea() {
     return this.width * this.height;
   };
 }
@@ -49,112 +49,74 @@ function fromJSON(proto, json) {
   Object.setPrototypeOf(obj, proto);
   return obj;
 }
-
 /**
  * Css selectors builder
  */
 const cssSelectorBuilder = {
+  answer: '',
   element(value) {
-    return new Selector().element(value);
+    this.error(1);
+    const obj = Object.create(cssSelectorBuilder);
+    obj.i = 1;
+    obj.answer = `${this.answer}${value}`;
+    return obj;
   },
 
   id(value) {
-    return new Selector().id(value);
+    this.error(2);
+    const obj = Object.create(cssSelectorBuilder);
+    obj.i = 2;
+    obj.answer = `${this.answer}#${value}`;
+    return obj;
   },
 
   class(value) {
-    return new Selector().class(value);
+    this.error(3);
+    const obj = Object.create(cssSelectorBuilder);
+    obj.i = 3;
+    obj.answer = `${this.answer}.${value}`;
+    return obj;
   },
 
   attr(value) {
-    return new Selector().attr(value);
+    this.error(4);
+    const obj = Object.create(cssSelectorBuilder);
+    obj.i = 4;
+    obj.answer = `${this.answer}[${value}]`;
+    return obj;
   },
 
   pseudoClass(value) {
-    return new Selector().pseudoClass(value);
+    this.error(5);
+    const obj = Object.create(cssSelectorBuilder);
+    obj.i = 5;
+    obj.answer = `${this.answer}:${value}`;
+    return obj;
   },
 
   pseudoElement(value) {
-    return new Selector().pseudoElement(value);
+    this.error(6);
+    const obj = Object.create(cssSelectorBuilder);
+    obj.i = 6;
+    obj.answer = `${this.answer}::${value}`;
+    return obj;
   },
 
   combine(selector1, combinator, selector2) {
-    return new Selector().combine(selector1, combinator, selector2);
+    const obj = Object.create(cssSelectorBuilder);
+    obj.answer = `${selector1.answer} ${combinator} ${selector2.answer}`;
+    return obj;
   },
-};
-
-class Selector {
-  constructor() {
-    this.result = '';
-    this.order = [];
-  }
-
-  checkOrder(type) {
-    const orderMap = {
-      element: 1,
-      id: 2,
-      class: 3,
-      attr: 4,
-      pseudoClass: 5,
-      pseudoElement: 6,
-    };
-
-    if (this.order.length > 0 && orderMap[type] < Math.max(...this.order)) {
-      throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
-    }
-
-    if (this.order.includes(orderMap[type]) && (type === 'element' || type === 'id' || type === 'pseudoElement')) {
-      throw new Error(`${type} should not occur more than once inside the selector`);
-    }
-
-    this.order.push(orderMap[type]);
-  }
-
-  element(value) {
-    this.checkOrder('element');
-    this.result += value;
-    return this;
-  }
-
-  id(value) {
-    this.checkOrder('id');
-    this.result += `#${value}`;
-    return this;
-  }
-
-  class(value) {
-    this.checkOrder('class');
-    this.result += `.${value}`;
-    return this;
-  }
-
-  attr(value) {
-    this.checkOrder('attr');
-    this.result += `[${value}]`;
-    return this;
-  }
-
-  pseudoClass(value) {
-    this.checkOrder('pseudoClass');
-    this.result += `:${value}`;
-    return this;
-  }
-
-  pseudoElement(value) {
-    this.checkOrder('pseudoElement');
-    this.result += `::${value}`;
-    return this;
-  }
-
-  combine(selector1, combinator, selector2) {
-    this.result = `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
-    return this;
-  }
 
   stringify() {
-    return this.result;
-  }
-}
+    return this.answer;
+  },
+
+  error(newIndex) {
+    if (this.i > newIndex) throw new Error('Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element');
+    if (this.i === newIndex && (newIndex === 1 || newIndex === 2 || newIndex === 6)) throw new Error('Element, id and pseudo-element should not occur more then one time inside the selector');
+  },
+};
 
 module.exports = {
   Rectangle,
