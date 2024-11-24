@@ -95,11 +95,9 @@ function getFastestPromise(array) {
  */
 function chainPromises(array, action) {
   return array
-    .reduce((acc, promise) => {
-      return acc
-        .then((res) => promise.then((value) => [...res, value]).catch(() => res))
-        .catch(() => []);
-    }, Promise.resolve([]))
+    .reduce((acc, promise) => acc
+      .then((res) => promise.then((value) => [...res, value]).catch(() => res))
+      .catch(() => []), Promise.resolve([]))
     .then((results) => results.reduce(action));
 }
 
