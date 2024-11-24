@@ -45,8 +45,7 @@ function getRegexForPitSpot() {
  * @return {RegExp}
  */
 function getPasswordValidator(minLength) {
-  // Регулярное выражение для проверки пароля по всем критериям
-  return new RegExp(`^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[A-Za-z\\d_]{${minLength},}$`);
+  return new RegExp(`^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])[0-9a-zA-Z]{${minLength},}$`, '');
 }
 
 module.exports = {
