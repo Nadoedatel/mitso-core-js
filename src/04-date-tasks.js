@@ -74,22 +74,21 @@ function angleBetweenClockHands(date) {
  * @return {string}
  */
 function getDay(day, isLeap) {
-  const daysInMonths = isLeap
-    ? [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    : [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  // Array with days per month depending on whether it's a leap year
+  const monthLengths = [31, isLeap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-  const months = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'
-  ];
-
+  let remainingDay = day;
   let monthIndex = 0;
-  while (day > daysInMonths[monthIndex]) {
-    day -= daysInMonths[monthIndex];
-    monthIndex++;
+
+  // Loop to determine the correct month and remaining day
+  while (remainingDay > monthLengths[monthIndex]) {
+    remainingDay -= monthLengths[monthIndex];
+    monthIndex += 1;
   }
 
-  return `${months[monthIndex]}, ${day}`;
+  // Return the formatted string with the month and the day
+  return `${monthNames[monthIndex]}, ${remainingDay}`;
 }
 
 module.exports = {
