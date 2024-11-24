@@ -12,7 +12,7 @@
  *   getComposition(Math.sin, Math.asin)(x) => Math.sin(Math.asin(x))
  */
 function getComposition(f, g) {
-  return function(x) {
+  return function composition(x) {
     return f(g(x));
   };
 }
@@ -33,8 +33,8 @@ function getComposition(f, g) {
  *   power05(16) => 4
  */
 function getPowerFunction(exponent) {
-  return function(x) {
-    return Math.pow(x, exponent);
+  return function power(x) {
+    return x ** exponent; // Используем оператор ** вместо Math.pow
   };
 }
 
@@ -53,8 +53,11 @@ function getPowerFunction(exponent) {
  */
 function getPolynom(...coeffs) {
   if (coeffs.length === 0) return null;
-  return function(x) {
-    return coeffs.reduce((acc, coeff, index) => acc + coeff * Math.pow(x, coeffs.length - 1 - index), 0);
+  return function polynom(x) {
+    return coeffs.reduce((acc, coeff, index) => {
+      const power = coeffs.length - 1 - index;
+      return acc + coeff * x ** power; // Разделили длинную строку
+    }, 0);
   };
 }
 
@@ -75,7 +78,7 @@ function getPolynom(...coeffs) {
 function memoize(func) {
   let cachedResult;
   let called = false;
-  return function() {
+  return function memoized() {
     if (!called) {
       cachedResult = func();
       called = true;
@@ -100,7 +103,7 @@ function memoize(func) {
  * retryer() => 2
  */
 function retry(func, attempts) {
-  return function() {
+  return function retryFunc() {
     let currentAttempt = 0;
     let result;
     while (currentAttempt < attempts) {
@@ -108,7 +111,7 @@ function retry(func, attempts) {
         result = func();
         break;
       } catch (e) {
-        currentAttempt++;
+        currentAttempt += 1; // Заменили ++ на более явное увеличение
       }
     }
     return result;
@@ -136,12 +139,12 @@ function retry(func, attempts) {
  * cos(3.141592653589793) ends
  */
 function logger(func, logFunc) {
-  return function(...args) {
-    const argsStr = args.map(arg => JSON.stringify(arg)).join(', ');
-    logFunc(`${func.name}(${argsStr}) starts`);
-    const result = func(...args);
-    logFunc(`${func.name}(${argsStr}) ends`);
-    return result;
+  return (...arg) => {
+    const val = `${func.name}(${JSON.stringify(arg).slice(1, -1)})`;
+    logFunc(`${val} starts`);
+    const res = func(...arg);
+    logFunc(`${val} ends`);
+    return res;
   };
 }
 
@@ -159,7 +162,7 @@ function logger(func, logFunc) {
  *   partialUsingArguments(fn, 'a','b','c','d')() => 'abcd'
  */
 function partialUsingArguments(fn, ...args1) {
-  return function(...args2) {
+  return function partial(...args2) {
     return fn(...args1, ...args2);
   };
 }
@@ -182,9 +185,10 @@ function partialUsingArguments(fn, ...args1) {
  *   getId10() => 11
  */
 function getIdGeneratorFunction(startFrom) {
-  let id = startFrom;
-  return function() {
-    return id++;
+  let id = startFrom - 1;
+  return function idGenerator() {
+    id += 1; // Используем += вместо явного присваивания
+    return id;
   };
 }
 
