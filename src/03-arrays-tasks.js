@@ -24,19 +24,18 @@ function generateOdds(len) {
 function doubleArray(arr) {
   return arr.concat(arr);
 }
-
 /**
  * Returns an array of positive numbers from the specified array
  */
 function getArrayOfPositives(arr) {
-  return arr.filter(num => num > 0);
+  return arr.filter((num) => num > 0);
 }
 
 /**
  * Returns the array with strings only from the specified array
  */
 function getArrayOfStrings(arr) {
-  return arr.filter(item => typeof item === 'string');
+  return arr.filter((item) => typeof item === 'string');
 }
 
 /**
@@ -50,14 +49,14 @@ function removeFalsyValues(arr) {
  * Returns the array of uppercase strings from the specified array
  */
 function getUpperCaseStrings(arr) {
-  return arr.map(str => str.toUpperCase());
+  return arr.map((str) => str.toUpperCase());
 }
 
 /**
  * Returns the array of string lengths from the specified string array
  */
 function getStringsLength(arr) {
-  return arr.map(str => str.length);
+  return arr.map((str) => str.length);
 }
 
 /**
@@ -86,14 +85,14 @@ function getTail(arr, n) {
  * Returns CSV representation of two-dimensional numeric array
  */
 function toCsvText(arr) {
-  return arr.map(row => row.join(',')).join('\n');
+  return arr.map((row) => row.join(',')).join('\n');
 }
 
 /**
  * Transforms the numeric array into the array of squares
  */
 function toArrayOfSquares(arr) {
-  return arr.map(num => num * num);
+  return arr.map((num) => num * num);
 }
 
 /**
@@ -131,7 +130,7 @@ function get3TopItems(arr) {
  * Returns the number of positive numbers from specified array
  */
 function getPositivesCount(arr) {
-  return arr.filter(num => typeof num === 'number' && num > 0).length;
+  return arr.filter((num) => typeof num === 'number' && num > 0).length;
 }
 
 /**
@@ -153,14 +152,14 @@ function getItemsSum(arr) {
  * Returns the number of all falsy values in the specified array
  */
 function getFalsyValuesCount(arr) {
-  return arr.filter(item => !item).length;
+  return arr.filter((item) => !item).length;
 }
 
 /**
  * Returns the number of all occurrences of the specified item in an array
  */
 function findAllOccurrences(arr, item) {
-  return arr.filter(el => el === item).length;
+  return arr.filter((el) => el === item).length;
 }
 
 /**
@@ -181,9 +180,7 @@ function sortCitiesArray(arr) {
  * Creates an identity matrix of the specified size
  */
 function getIdentityMatrix(n) {
-  return Array.from({ length: n }, (_, i) =>
-    Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))
-  );
+  return [...Array(n)].map((_, i) => [...Array(n)].map((__, j) => (i === j ? 1 : 0)));
 }
 
 /**
@@ -207,7 +204,11 @@ function group(array, keySelector, valueSelector) {
   return array.reduce((map, item) => {
     const key = keySelector(item);
     const value = valueSelector(item);
-    map.has(key) ? map.get(key).push(value) : map.set(key, [value]);
+    if (map.has(key)) {
+      map.get(key).push(value);
+    } else {
+      map.set(key, [value]);
+    }
     return map;
   }, new Map());
 }
@@ -230,8 +231,42 @@ function getElementByIndexes(arr, indexes) {
  * Swaps the head and tail of the specified array
  */
 function swapHeadAndTail(arr) {
-  const mid = Math.floor(arr.length / 2);
-  const head = arr.slice(0, mid);
-  const tail = arr.slice(-mid);
-  return arr.length % 2 === 0 ? [...tail, ...head] : [...tail, arr[mid], ...head];
+  const tail = arr.slice(Math.round(arr.length / 2), arr.length);
+  const head = arr.slice(0, Math.floor(arr.length / 2));
+  const cEl = arr.slice(arr.length / 2, arr.length / 2 + 1);
+  return arr.length % 2 ? tail.concat(cEl).concat(head) : tail.concat(head);
 }
+
+module.exports = {
+  findElement,
+  generateOdds,
+  doubleArray,
+  getArrayOfPositives,
+  getArrayOfStrings,
+  removeFalsyValues,
+  getUpperCaseStrings,
+  getStringsLength,
+  insertItem,
+  getHead,
+  getTail,
+  toCsvText,
+  toArrayOfSquares,
+  getMovingSum,
+  getSecondItems,
+  propagateItemsByPositionIndex,
+  get3TopItems,
+  getPositivesCount,
+  sortDigitNamesByNumericOrder,
+  getItemsSum,
+  getFalsyValuesCount,
+  findAllOccurrences,
+  toStringList,
+  sortCitiesArray,
+  getIdentityMatrix,
+  getIntervalArray,
+  distinct,
+  group,
+  selectMany,
+  getElementByIndexes,
+  swapHeadAndTail,
+};
